@@ -390,6 +390,9 @@ img {
 
 .shirt-size-menu h1 {
   padding: 0.5em 0;
+  width: auto;
+  color:#000;
+  font-size: 2rem;
 }
 
 .size-div {

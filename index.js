@@ -159,7 +159,7 @@ app.post("/create-checkout-session", async (req, res) => {
         },
 
         success_url: `${YOUR_DOMAIN}/shirt-thank-you.html`,
-        cancel_url: `${YOUR_DOMAIN}/new-index.html`,
+        cancel_url: `${YOUR_DOMAIN}/shirt.html`,
         // Pass the selected image information to the metadata
         payment_method_types: ["card"],
         payment_intent_data: {
