@@ -82,7 +82,7 @@ section {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 a {
@@ -382,7 +382,7 @@ a {
 
 @media (max-width: 1024px) {
   .home {
-    margin-top: 100px;
+    margin-top: 200px;
   }
 
   .home-content {
