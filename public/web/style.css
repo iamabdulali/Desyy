@@ -382,7 +382,7 @@ a {
 
 @media (max-width: 1024px) {
   .home {
-    margin-top: 220px;
+    margin-top: 200px;
   }
 
   .home-content {
@@ -442,7 +442,7 @@ a {
 
 @media (max-width: 768px) {
   .home {
-    margin-top: 100px;
+    margin-top: 130px;
   }
 
   .home-content {
