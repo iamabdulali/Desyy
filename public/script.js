@@ -1076,23 +1076,35 @@ function selectAllTextObjects() {
 // Call selectAllTextObjects function whenever a selection is created on the canvas
 canvas.on("selection:created", selectAllTextObjects);
 
-function base64ToBlob(base64String) {
-  // Split the base64 string into two parts
-  const parts = base64String.split(";base64,");
-  const contentType = parts[0].split(":")[1];
-  const raw = window.atob(parts[1]);
-  const rawLength = raw.length;
-  const uInt8Array = new Uint8Array(rawLength);
+// function base64ToBlob(base64String) {
+//   // Split the base64 string into two parts
+//   const parts = base64String.split(";base64,");
+//   const contentType = parts[0].split(":")[1];
+//   const raw = window.atob(parts[1]);
+//   const rawLength = raw.length;
+//   const uInt8Array = new Uint8Array(rawLength);
 
-  for (let i = 0; i < rawLength; ++i) {
-    uInt8Array[i] = raw.charCodeAt(i);
+//   for (let i = 0; i < rawLength; ++i) {
+//     uInt8Array[i] = raw.charCodeAt(i);
+//   }
+
+//   return new Blob([uInt8Array], { type: contentType });
+// }
+
+// function blobToPng(blob) {
+//   return URL.createObjectURL(blob);
+// }
+
+function dataURLtoFile(dataurl, filename) {
+  var arr = dataurl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
   }
-
-  return new Blob([uInt8Array], { type: contentType });
-}
-
-function blobToPng(blob) {
-  return URL.createObjectURL(blob);
+  return new File([u8arr], filename, { type: mime });
 }
 
 function addDesignToShirt(callback) {
@@ -1147,11 +1159,9 @@ function addDesignToShirt(callback) {
   domtoimage
     .toJpeg(node, param)
     .then(function (dataUrl) {
-      convertedFrontUrl = dataUrl;
-         const blob = base64ToBlob(dataUrl);
-      const blob2 = blobToPng(blob);
-      alert(blob)
-      alert(blob2)
+      // convertedFrontUrl = dataUrl;
+    const newImage = dataURLtoFile(dataUrl, "hello.jpeg");
+      convertedFrontUrl = URL.createObjectURL(newImage);
       // alert(convertedFrontUrl)
       if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
         document.querySelector("#shirtDesignFront").src = convertedFrontUrl;
