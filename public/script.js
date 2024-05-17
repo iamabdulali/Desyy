@@ -1158,6 +1158,16 @@ function addDesignToShirt(callback) {
     },
   };
 
+  domtoimage.toPng(node)
+    .then(function (dataUrl) {
+        var img = new Image();
+        img.src = dataUrl;
+        document.body.appendChild(img);
+    })
+    .catch(function (error) {
+        console.error('oops, something went wrong!', error);
+    });
+
   domtoimage
     .toJpeg(node, param)
     .then(function (dataUrl) {
@@ -1186,6 +1196,7 @@ function addDesignToShirt(callback) {
     })
     .catch(function (error) {
       console.error("oops, something went wrong!", error);
+      alert(error)
     })
     .finally(function () {
       img.src = originalImg;
