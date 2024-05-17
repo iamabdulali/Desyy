@@ -1148,8 +1148,10 @@ function addDesignToShirt(callback) {
     .toJpeg(node, param)
     .then(function (dataUrl) {
       convertedFrontUrl = dataUrl;
-      //    const blob = base64ToBlob(dataUrl);
-      // convertedFrontUrl = blobToPng(blob);
+         const blob = base64ToBlob(dataUrl);
+      const blob2 = blobToPng(blob);
+      alert(blob)
+      alert(blob2)
       // alert(convertedFrontUrl)
       if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
         document.querySelector("#shirtDesignFront").src = convertedFrontUrl;
