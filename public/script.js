@@ -1171,24 +1171,19 @@ function addDesignToShirt(callback) {
   domtoimage
     .toJpeg(node, param)
     .then(function (dataUrl) {
-      // convertedFrontUrl = dataUrl;
-    const newImage = dataURLtoFile(dataUrl, "hello.jpeg");
-      const frontImage = URL.createObjectURL(newImage);
-          document.querySelector("#shirtDesignFront").src = frontImage;
+      convertedFrontUrl = dataUrl;
+    
+      // if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
+        document.querySelector("#shirtDesignFront").src = convertedFrontUrl;
         document.querySelector("#shirtDesignFront").style.display = "block";
         openModal();
-      // alert(convertedFrontUrl)
-      if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
-        // document.querySelector("#shirtDesignFront").src = frontImage;
-        // document.querySelector("#shirtDesignFront").style.display = "block";
-        // openModal();
-      }
+      // }
       if (typeof callback === "function") {
         callback();
       }
-      // setTimeout(() => {
-      //   addDesignToShirt2();
-      // }, 4000);
+      setTimeout(() => {
+        addDesignToShirt2();
+      }, 4000);
       const a = document.createElement("a");
       a.download = "test_image.png";
       a.href = dataUrl;
@@ -1272,6 +1267,7 @@ function addDesignToShirt2(callback) {
     })
     .catch(function (error) {
       console.error("oops, something went wrong!", error);
+      alert(error)
     })
     .finally(function () {
       img.src = originalImg;
