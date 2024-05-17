@@ -1162,6 +1162,7 @@ function addDesignToShirt(callback) {
       // convertedFrontUrl = dataUrl;
     const newImage = dataURLtoFile(dataUrl, "hello.jpeg");
       const frontImage = URL.createObjectURL(newImage);
+          $(".loading-modal").hide();
       // alert(convertedFrontUrl)
       if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
         document.querySelector("#shirtDesignFront").src = frontImage;
