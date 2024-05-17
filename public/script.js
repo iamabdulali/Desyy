@@ -1161,19 +1161,19 @@ function addDesignToShirt(callback) {
     .then(function (dataUrl) {
       // convertedFrontUrl = dataUrl;
     const newImage = dataURLtoFile(dataUrl, "hello.jpeg");
-      convertedFrontUrl = URL.createObjectURL(newImage);
+      const frontImage = URL.createObjectURL(newImage);
       // alert(convertedFrontUrl)
       if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
-        document.querySelector("#shirtDesignFront").src = convertedFrontUrl;
+        document.querySelector("#shirtDesignFront").src = frontImage;
         document.querySelector("#shirtDesignFront").style.display = "block";
-        // openModal();
+        openModal();
       }
       if (typeof callback === "function") {
         callback();
       }
-      setTimeout(() => {
-        addDesignToShirt2();
-      }, 4000);
+      // setTimeout(() => {
+      //   addDesignToShirt2();
+      // }, 4000);
       const a = document.createElement("a");
       a.download = "test_image.png";
       a.href = dataUrl;
