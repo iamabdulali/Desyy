@@ -866,7 +866,7 @@ function hasText(canvas) {
 }
 
 canvas.on("mouse:down", function (event) {
-  hasImagesForFrontCanvas = hasImages(canvas || false);
+  hasImagesForFrontCanvas = hasImages(canvas) || false;
   hasTextForFrontCanvas = hasText(canvas) || false;
 });
 
@@ -876,7 +876,7 @@ canvas2.on("mouse:down", function (event) {
 });
 
 canvas.on("selection:cleared", function (event) {
-  hasImagesForFrontCanvas = hasImages(canvas || false);
+  hasImagesForFrontCanvas = hasImages(canvas) || false;
   hasTextForFrontCanvas = hasText(canvas) || false;
 });
 
@@ -891,7 +891,7 @@ async function handleUpload(selectedSizes, shirtColor) {
     const uploadResponse = await uploadImage();
 
     const response = await fetch(
-      "https://desyy.onrender.com/create-checkout-session",
+      "http://localhost:4242/create-checkout-session",
       {
         method: "POST",
         headers: {
@@ -916,9 +916,9 @@ async function handleUpload(selectedSizes, shirtColor) {
     const session = await response.json();
 
     // Redirect to the Stripe Checkout page
-    if (termsAccepted) {
-      window.location.href = session.url;
-    }
+    // if (termsAccepted) {
+    window.location.href = session.url;
+    // }
     sessionUrl = session.url;
   } catch (error) {
     console.error("Error processing checkout:", error);
@@ -981,12 +981,15 @@ async function uploadImage() {
   try {
     // Send the front side image data to backend and wait for completion
     if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
-      const frontResponse = await fetch("https://desyy.onrender.com/upload", {
+      const frontResponse = await fetch("http://localhost:4242/upload", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ frontImage: canvasFrontDesign }),
+        body: JSON.stringify({
+          frontImage:
+            window.innerWidth <= 500 ? convertedFrontUrl : canvasFrontDesign,
+        }),
       });
 
       if (!frontResponse.ok) {
@@ -998,12 +1001,15 @@ async function uploadImage() {
 
     if (hasImagesForBackCanvas || hasTextForBackCanvas) {
       // Send the back side image data to backend and wait for completion
-      const backResponse = await fetch("https://desyy.onrender.com/uploadBack", {
+      const backResponse = await fetch("http://localhost:4242/uploadBack", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ backImage: canvasBackDesign }),
+        body: JSON.stringify({
+          backImage:
+            window.innerWidth <= 500 ? convertedBackUrl : canvasBackDesign,
+        }),
       });
 
       if (!backResponse.ok) {
@@ -1076,39 +1082,6 @@ function selectAllTextObjects() {
 // Call selectAllTextObjects function whenever a selection is created on the canvas
 canvas.on("selection:created", selectAllTextObjects);
 
-// function base64ToBlob(base64String) {
-//   // Split the base64 string into two parts
-//   const parts = base64String.split(";base64,");
-//   const contentType = parts[0].split(":")[1];
-//   const raw = window.atob(parts[1]);
-//   const rawLength = raw.length;
-//   const uInt8Array = new Uint8Array(rawLength);
-
-//   for (let i = 0; i < rawLength; ++i) {
-//     uInt8Array[i] = raw.charCodeAt(i);
-//   }
-
-//   return new Blob([uInt8Array], { type: contentType });
-// }
-
-// function blobToPng(blob) {
-//   return URL.createObjectURL(blob);
-// }
-
-function dataURLtoFile(dataurl, filename) {
-  var arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new File([u8arr], filename, { type: mime });
-}
-
- $(".loading-modal").hide();
-
 function addDesignToShirt(callback) {
   $("#holaBtn").click();
   $(".shirtSize").hide();
@@ -1118,7 +1091,7 @@ function addDesignToShirt(callback) {
   const img = document.getElementById("shirt-image");
 
   const originalImg = img.src;
-  // img.src = "./Shirt/Front/White.jpeg";
+  img.src = "./Shirt/Front/bg.png";
   const node = document.getElementById("canvas-front-container");
 
   const targetWidth = 4500;
@@ -1158,26 +1131,15 @@ function addDesignToShirt(callback) {
     },
   };
 
-  domtoimage.toPng(node)
-    .then(function (dataUrl) {
-        var img = new Image();
-        img.src = dataUrl;
-        document.body.appendChild(img);
-    })
-    .catch(function (error) {
-        console.error('oops, something went wrong!', error);
-    });
-
   domtoimage
     .toJpeg(node, param)
     .then(function (dataUrl) {
       convertedFrontUrl = dataUrl;
-    
-      // if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
+      if (hasImagesForFrontCanvas || hasTextForFrontCanvas) {
         document.querySelector("#shirtDesignFront").src = convertedFrontUrl;
         document.querySelector("#shirtDesignFront").style.display = "block";
-        openModal();
-      // }
+        // openModal();
+      }
       if (typeof callback === "function") {
         callback();
       }
@@ -1191,7 +1153,6 @@ function addDesignToShirt(callback) {
     })
     .catch(function (error) {
       console.error("oops, something went wrong!", error);
-      alert(error)
     })
     .finally(function () {
       img.src = originalImg;
@@ -1204,10 +1165,10 @@ function addDesignToShirt2(callback) {
   // Disable borders
   canvas2.discardActiveObject().renderAll();
 
-  const img = document.getElementById("shirt-image");
+  const img = document.getElementById("shirt-image-back");
 
   const originalImg = img.src;
-  // img.src = "./Shirt/Front/White.jpeg";
+  img.src = "./Shirt/Back/bg.png";
   const node = document.getElementById("canvas-back-container");
 
   const targetWidth = 4500;
@@ -1251,8 +1212,9 @@ function addDesignToShirt2(callback) {
     .toJpeg(node, param)
     .then(function (dataUrl) {
       convertedBackUrl = dataUrl;
-      openModal();
+      // openModal();
       $(".loading-modal").hide();
+      $(".overlay").hide();
       if (hasImagesForBackCanvas || hasTextForBackCanvas) {
         document.querySelector("#shirtDesignBack").src = convertedBackUrl;
         document.querySelector("#shirtDesignBack").style.display = "block";
@@ -1267,7 +1229,6 @@ function addDesignToShirt2(callback) {
     })
     .catch(function (error) {
       console.error("oops, something went wrong!", error);
-      alert(error)
     })
     .finally(function () {
       img.src = originalImg;
