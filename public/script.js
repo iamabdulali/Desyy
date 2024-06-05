@@ -1085,6 +1085,11 @@ canvas.on("selection:created", selectAllTextObjects);
 function addDesignToShirt(callback) {
   $("#holaBtn").click();
   $(".shirtSize").hide();
+
+    document.querySelectorAll("canvas").forEach((canvas) => {
+    canvas.style.border = "2px dashed black";
+  });
+  
   // Disable borders
   canvas.discardActiveObject().renderAll();
 
@@ -1161,6 +1166,10 @@ function addDesignToShirt(callback) {
 function addDesignToShirt2(callback) {
   $("#adiosBtn").click();
   $(".shirtSize").hide();
+
+    document.querySelectorAll("canvas").forEach((canvas) => {
+    canvas.style.border = "2px dashed black";
+  });
 
   // Disable borders
   canvas2.discardActiveObject().renderAll();
